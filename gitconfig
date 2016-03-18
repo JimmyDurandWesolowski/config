@@ -30,8 +30,7 @@
 	# Usage: git signoff-rebase [base-commit]
 	# Source: http://stackoverflow.com/questions/25570947/how-to-use-git-interactive-rebase-for-signing-off-a-series-of-commits
 	signoff-rebase = "!GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/e/' sh -c 'git rebase -i $1 && while git rebase --continue; do git commit --amend --signoff --no-edit; done' -"
-	# signoff-check = "!f() { HASHES=$(git log --pretty=format:'%h' $@); for hash in ${HASHES}; do git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s ' ${hash}; [ -z "$(git show ${hash} | grep $user" ; done; }; f"
-	test = "!PAGER=; f() { HASHES=$(git log --pretty=format:'%h' $@); for hash in ${HASHES}; do git log -1 --pretty=tformat:\"%Cred%h%Creset -%C(yellow)%d%Creset %s $(if [ -n \"$(git show ${hash} | grep 'Signed-off-by: Jimmy Durand Wesolowski')\" ]; then echo '%Cgreen(V)%Creset'; else echo '%Cred(X)%Creset'; fi)\" ${hash}; done; }; f"
+	signoff-check = "!PAGER=; f() { HASHES=$(git log --pretty=format:'%h' $@); for hash in ${HASHES}; do git log -1 --pretty=tformat:\"%Cred%h%Creset -%C(yellow)%d%Creset %s $(if [ -n \"$(git show ${hash} | grep 'Signed-off-by: Jimmy Durand Wesolowski')\" ]; then echo '%Cgreen(V)%Creset'; else echo '%Cred(X)%Creset'; fi)\" ${hash}; done; }; f"
 	commit = commit -s
 	co = checkout
 	br = branch

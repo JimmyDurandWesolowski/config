@@ -50,7 +50,7 @@
 		f"
 
 	# Find modificaton with a regex, into an optional directory
-	find = "!PAGER= sh -c 'if [ -z ${1} ]; then echo \"argument required: <pattern> [search path]\"; exit 1; fi; for hash in $(git hash-list -- ${2}); do diff=$(git show ${hash} -- ${2} | grep --color=always ${1}); if [ -n \"${diff}\" ]; then git log --oneline -n 1 ${hash}; echo \"${diff}\"; echo; fi; done' -"
+	find = "!PAGER= sh -c 'if [ -z ${1} ]; then echo \"argument required: <pattern> [search path]\"; exit 1; fi; for hash in $(git hash-list -- ${2}); do diff=$(git show ${hash} -- ${2} | grep -C 2 --color=always ${1}); if [ -n \"${diff}\" ]; then git log --oneline -n 1 ${hash}; echo \"${diff}\"; echo; fi; done' -"
 	up = "!f() { BRANCH=master; if [ -n $1 ]; then BRANCH=$1; fi; git log --reverse --ancestry-path HEAD~..$BRANCH --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'; }; f"
 	# Usage: git signoff-rebase [base-commit]
 	# Source: http://stackoverflow.com/questions/25570947/how-to-use-git-interactive-rebase-for-signing-off-a-series-of-commits

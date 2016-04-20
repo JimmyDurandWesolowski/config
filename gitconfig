@@ -17,13 +17,25 @@
         dif = diff --no-ext-diff
         ncdiff = diff -I"/*/" -I"//*\n"
         ss = show --stat
-	# From https://git.wiki.kernel.org/index.php/Aliases
-	funcdiff = !sh -c \"git show \\\"\\$0:\\$2\\\" | sed -n \\\"/^[^ \\t].*\\$3[ \\t]*(/,/^}/p\\\" > .tmp1 &&\n        git show \\\"\\$1:\\$2\\\" | sed -n \\\"/^[^ \\t].*\\$3[ \\t]*(/,/^}/p\\\" > .tmp2 &&\n        git diff --no-index .tmp1 .tmp2\"
-        edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
-        add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
-	hash-list = "!sh -c 'git log --oneline $1 --pretty='format:%h'"
-	# Diff search (optional argument: directory or file to search
-	ds = "!sh -c 'for hash in $(git hash-list $1); do git show ${hash} ${1}; echo -n \"Next (Y)? \"; read ans; if [ \"$ans\" != \"y\" -a \"$ans\" != \"\" ]; then break; fi; done' -"
+
+	# From https://git.wiki.kernel.org/index.php/Aliases - Improved
+	# When you want to see just the differences of one function in one file
+	# in two different commits, you can do this:
+	# Usage: git funcdiff <old-rev> <new-rev> <path> <function>
+	funcdiff = "!f() { git show \"$0:$2\" | \
+			sed -n \"/^[^ \t].*$3[ \t]*(/,/^}/p\" > .tmp1 &&\
+		git show \"$1:$2\" | \
+			sed -n \"/^[^ \t].*$3[ \t]*(/,/^}/p\" > .tmp2 &&\
+		git diff --no-index .tmp1 .tmp2 }; f"
+
+        edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 |	\
+		sort -u ; }; ${EDITOR} `f`"
+        add-unmerged = "!f() { git ls-files --unmerged | cut -f2 |	\
+		sort -u ; }; git add `f`"
+
+	# Retrieve hash list
+	hash-list = log --oneline --pretty='format:%h'
+
 	# Find modificaton with a regex, into an optional directory
 	find = "!PAGER= sh -c 'if [ -z ${1} ]; then echo \"argument required: <pattern> [search path]\"; exit 1; fi; for hash in $(git hash-list -- ${2}); do diff=$(git show ${hash} -- ${2} | grep --color=always ${1}); if [ -n \"${diff}\" ]; then git log --oneline -n 1 ${hash}; echo \"${diff}\"; echo; fi; done' -"
 	up = "!f() { BRANCH=master; if [ -n $1 ]; then BRANCH=$1; fi; git log --reverse --ancestry-path HEAD~..$BRANCH --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'; }; f"

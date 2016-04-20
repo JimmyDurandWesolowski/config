@@ -64,6 +64,15 @@
 	unstage = reset HEAD --
 	last = log -1 HEAD
 
+	# Checkout out and reset files
+	resetnco = "!usage() {						\
+			echo 'Usage: resetnco <file> [file [file ...]]';\
+		}; 							\
+		f() {							\
+			if [ $# -lt 1 ]; then usage; exit 1; fi;	\
+			git reset $* && git checkout $*;		\
+		}; f"
+
 [merge]
 	tool = meld
 

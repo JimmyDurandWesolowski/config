@@ -124,6 +124,9 @@
 			git reset $* && git checkout $*;		\
 		}; f"
 
+	# Keep this cool stuff somewhere
+	# GIT_EDITOR='sed -i -re "s|(cherry picked from commit [a-z0-9]+)\)|\1\nfrom https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/)|"' GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' sh -c 'git rebase -i github/staging-44 && while git rebase --continue; do git commit --amend; done'
+
 [merge]
 	tool = meld
 [credential]

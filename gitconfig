@@ -130,7 +130,23 @@
 	# to edit. Example:
 	# GIT_EDITOR='sed -i -re "s|(cherry picked from commit [a-z0-9]+)\)|\1\nfrom https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/)|"' GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' sh -c 'git rebase -i <REBASE POINT> && while git rebase --continue; do git commit --amend; done'
 
+[mergetool.ediff]
+    cmd = emacs --eval \"\
+(progn\
+  (defun ediff-write-merge-buffer ()\
+    (let ((file ediff-merge-store-file))\
+      (set-buffer ediff-buffer-C)\
+      (write-region (point-min) (point-max) file)\
+      (message \\\"Merge buffer saved in: %s\\\" file)\
+      (set-buffer-modified-p nil)\
+      (sit-for 1)))\
+  (setq ediff-quit-hook 'kill-emacs\
+        ediff-quit-merge-hook 'ediff-write-merge-buffer)\
+  (ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\"\
+                                   \\\"$BASE\\\" nil \\\"$MERGED\\\"))\"
+
 [merge]
-	tool = meld
+	tool = ediff
+	renamelimit = 2000
 [credential]
 	helper = cache --timeout=36000

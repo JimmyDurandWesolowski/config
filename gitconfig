@@ -124,8 +124,11 @@
 			git reset $* && git checkout $*;		\
 		}; f"
 
-	# Keep this cool stuff somewhere
-	# GIT_EDITOR='sed -i -re "s|(cherry picked from commit [a-z0-9]+)\)|\1\nfrom https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/)|"' GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' sh -c 'git rebase -i github/staging-44 && while git rebase --continue; do git commit --amend; done'
+	# To edit commit messages non-interactively, you can use a sed command
+	# in the GIT_EDITOR env. variable, and
+	# GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' to set the list of commit
+	# to edit. Example:
+	# GIT_EDITOR='sed -i -re "s|(cherry picked from commit [a-z0-9]+)\)|\1\nfrom https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/)|"' GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' sh -c 'git rebase -i <REBASE POINT> && while git rebase --continue; do git commit --amend; done'
 
 [merge]
 	tool = meld

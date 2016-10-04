@@ -12,16 +12,14 @@
 	# From http://stackoverflow.com/questions/171550/find-out-which-remote-\
 	#branch-a-local-branch-is-tracking and https://git.wiki.kernel.org/\
 	#index.php/Aliases
-        out = !LOCAL_BRANCH=$(git name-rev --name-only HEAD) && \
-	    TRACKING_REMOTE=$(git config branch.$LOCAL_BRANCH.remote) && \
-	    git log $TRACKING_REMOTE/$LOCAL_BRANCH..HEAD \
-		--pretty='format:%Cred%h%Creset %s' --color
-        subm = submodule
-        serve = daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
-        stp = status .
-        dif = diff --no-ext-diff
-        ncdiff = diff -I"/*/" -I"//*\n"
-        ss = show --stat
+	out = !TRACKING_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream}) && \
+		git log $TRACKING_BRANCH..HEAD --pretty='format:%Cred%h%Creset %s' --color
+	subm = submodule
+	serve = daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+	stp = status .
+	dif = diff --no-ext-diff
+	ncdiff = diff -I"/*/" -I"//*\n"
+	ss = show --stat
 	st = status
 
 	# From https://git.wiki.kernel.org/index.php/Aliases - Improved

@@ -12,16 +12,14 @@
 	# From http://stackoverflow.com/questions/171550/find-out-which-remote-\
 	#branch-a-local-branch-is-tracking and https://git.wiki.kernel.org/\
 	#index.php/Aliases
-        out = !LOCAL_BRANCH=$(git name-rev --name-only HEAD) && \
-	    TRACKING_REMOTE=$(git config branch.$LOCAL_BRANCH.remote) && \
-	    git log $TRACKING_REMOTE/$LOCAL_BRANCH..HEAD \
-		--pretty='format:%Cred%h%Creset %s' --color
-        subm = submodule
-        serve = daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
-        stp = status .
-        dif = diff --no-ext-diff
-        ncdiff = diff -I"/*/" -I"//*\n"
-        ss = show --stat
+	out = !TRACKING_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream}) && \
+		git log $TRACKING_BRANCH..HEAD --pretty='format:%Cred%h%Creset %s' --color
+	subm = submodule
+	serve = daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+	stp = status .
+	dif = diff --no-ext-diff
+	ncdiff = diff -I"/*/" -I"//*\n"
+	ss = show --stat
 	st = status
 
 	# From https://git.wiki.kernel.org/index.php/Aliases - Improved
@@ -88,7 +86,7 @@
 	signoff-rebase = "!GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/e/' sh -c 'git rebase -i $1 && while git rebase --continue; do git commit --amend --signoff --no-edit; done' -"
 	signoff-check = "!PAGER=; f() {					\
 		HASHES=$(git log --pretty=format:'%h' $@);		\
-		NAME='Jimmy Durand Wesolowski';				\
+		NAME=$(git config user.name);				\
 		for hash in ${HASHES}; do				\
 			MATCH=$(git show --format=format:%B ${hash} |	\
 				grep \"Signed-off-by: ${NAME}\");	\

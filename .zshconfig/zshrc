@@ -1,0 +1,23 @@
+##  Which shell do I use ?
+export SHELL=`which zsh`
+
+## Sanity of my TTY
+[ -t 0 ] && /bin/stty erase  "^H" intr  "^C" susp "^Z" dsusp "^Y" stop "^S" start "^Q" kill "^U"  >& /dev/null
+#mesg y
+
+source ~/.zshconfig/bindkey.zsh
+source ~/.zshconfig/option.zsh
+source ~/.zshconfig/alias.zsh
+source ~/.zshconfig/env.zsh
+source ~/.zshconfig/prompt.zsh
+if [ -f ~/.zshconfig/specific.zsh ]; then
+    source ~/.zshconfig/specific.zsh
+fi
+
+## standarts settings
+limit core 0	# no core dump
+
+# History
+HISTFILE=~/.zshhistory
+HISTSIZE=10000
+SAVEHIST=8000

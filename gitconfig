@@ -127,6 +127,16 @@
 	# GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' to set the list of commit
 	# to edit. Example:
 	# GIT_EDITOR='sed -i -re "s|(cherry picked from commit [a-z0-9]+)\)|\1\nfrom https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/)|"' GIT_SEQUENCE_EDITOR='sed -i -re s/^pick/r/' sh -c 'git rebase -i <REBASE POINT> && while git rebase --continue; do git commit --amend; done'
+	
+	push-no-ci = push -o ci.skip
+
+	# Move all non-ignored untracked files to .trash
+	# Improvement over
+	# https://coderwall.com/p/g16jpq/keep-your-git-directory-clean-with-git-clean-and-git-trash
+	trash = !mkdir -p .trash && \
+	  [ -n \"`git ls-files --others --exclude-standard`\" ] && \
+	  git ls-files --others --exclude-standard | sed -re \"s|/.+||\" |\
+	  uniq | xargs mv -f -t .trash
 
 [mergetool.ediff]
     cmd = emacs --eval \"\
